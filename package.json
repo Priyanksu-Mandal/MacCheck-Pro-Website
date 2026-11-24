@@ -1,0 +1,19 @@
+{
+  "name": "maccheck-pro-website",
+  "version": "2.4.0",
+  "description": "Official marketing website and checkout portal for MacCheck Pro",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "npx serve .",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "maccheck",
+    "apple-silicon",
+    "macos",
+    "hardware-diagnostics",
+    "razorpay"
+  ],
+  "author": "MacCheck Team",
+  "license": "UNLICENSED"
+}

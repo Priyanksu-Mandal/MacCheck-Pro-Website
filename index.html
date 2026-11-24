@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MacCheck Pro — Universal Apple Silicon Hardware Diagnostic & Verification Suite</title>
+  <meta name="description" content="Never buy a second-hand Mac without checking this first. MacCheck Pro audits 20+ kernel device trees, true physical RAM, battery OEM microcontrollers, and corporate MDM/DEP enrollments in 120 seconds.">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- OpenGraph / Social Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MacCheck Pro — Hardware Verification & Refurbished Mac Diagnostic Playbook">
+  <meta property="og:description" content="Bypass superficial macOS UI strings. Audit Apple Silicon chips, battery OEM suppliers (ATL/Desay), blown woofers, swapped screens, and hidden MDM locks before you buy.">
+  <meta property="og:image" content="assets/images/dashboard-score.jpg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              glow: '#00f293'
+            },
+            dark: {
+              900: '#05070c',
+              850: '#090d16',
+              800: '#0d1322',
+              700: '#151c2e',
+              600: '#1f293d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Razorpay Standard Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css?v=2.6">
+</head>
+<body class="bg-dark-900 text-slate-100 selection:bg-brand-500 selection:text-black">
+
+  <!-- Sticky Glass Navbar -->
+  <header class="fixed top-0 left-0 right-0 z-40 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Left: Brand Logo -->
+      <div class="flex items-center gap-3 shrink-0">
+        <!-- Brand Logo -->
+        <a href="#" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-brand-500 to-emerald-300 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            <img src="assets/images/logo.png" alt="MacCheck Pro Logo" class="w-full h-full object-cover rounded-lg">
+          </div>
+          <div class="shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <span class="font-bold text-sm sm:text-base tracking-tight text-white group-hover:text-emerald-400 transition-colors">MacCheck Pro</span>
+              <span class="text-[9px] font-semibold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full hidden md:inline-block">v2.4</span>
+            </div>
+            <span class="text-[11px] text-slate-400 hidden sm:block -mt-0.5">Hardware Verification</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Desktop Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-4 xl:gap-6 text-xs xl:text-sm font-medium text-slate-300">
+        <a href="#simulator" class="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold flex items-center gap-1.5 shrink-0">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Simulator
+        </a>
+        <a href="#features" class="hover:text-emerald-400 transition-colors shrink-0">Features</a>
+        <a href="#tests" class="hover:text-emerald-400 transition-colors shrink-0">Tests</a>
+        <a href="#scams" class="hover:text-emerald-400 transition-colors shrink-0">Scam Traps</a>
+        <a href="#pricing" class="hover:text-emerald-400 transition-colors shrink-0">Pricing</a>
+        <a href="#about" class="hover:text-emerald-400 transition-colors shrink-0 text-white font-medium">About Us</a>
+        <a href="#faq" class="hover:text-emerald-400 transition-colors shrink-0">FAQ</a>
+      </nav>
+
+      <!-- Right Action Bar: Switch Country (Top Right Corner), CTA & Mobile Hamburger -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        
+        <!-- Country Selector Dropdown (Top Right Corner - Apple-style Switch Country: USA at top) -->
+        <div class="relative" id="country-dropdown-container">
+          <button id="country-dropdown-trigger" class="flex items-center gap-1.5 bg-[#0f1422] hover:bg-[#182035] px-3 py-1.5 rounded-full border border-white/20 text-xs font-semibold text-white transition-all shadow-md cursor-pointer" aria-expanded="false" title="Switch Country">
+            <span id="selected-country-flag" class="text-sm">🇮🇳</span>
+            <span id="selected-country-name" class="font-bold text-white hidden sm:inline">India</span>
+            <svg class="w-3.5 h-3.5 text-slate-300 transition-transform duration-200" id="country-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+
+          <!-- Dropdown Menu (Anchored to Right Corner - Clean Countries without currency, Smooth Slide Animation) -->
+          <div id="country-dropdown-menu" class="absolute right-0 mt-2 w-52 rounded-2xl bg-[#0c101a] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.95)] p-1.5 z-50">
+            <div class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-300 border-b border-white/10 flex items-center justify-between bg-white/[0.04] rounded-t-xl">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Switch Country</span>
+              </span>
+              <button id="country-dropdown-close" class="text-slate-400 hover:text-white p-0.5 rounded transition-colors cursor-pointer" aria-label="Close country menu" title="Close">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="pt-1 space-y-1">
+              <button class="country-dropdown-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-white hover:bg-emerald-500/20 transition-all cursor-pointer text-left" data-country="usa">
+                <span class="flex items-center gap-2.5">
+                  <span class="text-base">🇺🇸</span>
+                  <span class="text-white font-bold text-sm">USA</span>
+                </span>
+                <span class="country-check text-emerald-400 hidden text-xs font-bold">✓</span>
+              </button>
+              <button class="country-dropdown-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-white hover:bg-emerald-500/20 transition-all cursor-pointer text-left" data-country="canada">
+                <span class="flex items-center gap-2.5">
+                  <span class="text-base">🇨🇦</span>
+                  <span class="text-white font-bold text-sm">Canada</span>
+                </span>
+                <span class="country-check text-emerald-400 hidden text-xs font-bold">✓</span>
+              </button>
+              <button class="country-dropdown-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-white hover:bg-emerald-500/20 transition-all cursor-pointer text-left" data-country="india">
+                <span class="flex items-center gap-2.5">
+                  <span class="text-base">🇮🇳</span>
+                  <span class="text-white font-bold text-sm">India</span>
+                </span>
+                <span class="country-check text-emerald-400 text-xs font-bold">✓</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buy Button -->
+        <button data-buy-plan="personal" class="btn-primary text-xs sm:text-sm py-2 px-3 sm:px-4 flex items-center gap-1.5 shrink-0 shadow-sm">
+          <span class="hidden sm:inline">Get Pro</span>
+          <span class="line-through opacity-70 text-[10px] sm:text-[11px] price-personal-original">₹149</span>
+          <span class="price-personal font-extrabold text-dark-900">₹59</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button (Visible on screens < lg) -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-xl bg-dark-800/90 hover:bg-dark-700/90 border border-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg id="mobile-menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="mobile-menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="hidden lg:hidden border-t border-white/10 bg-dark-900/98 backdrop-blur-2xl px-5 py-5 space-y-4 shadow-2xl transition-all duration-300">
+      <nav class="flex flex-col space-y-2.5 text-sm font-medium text-slate-300">
+        <a href="#simulator" class="mobile-nav-link text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-2 py-1.5">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Live Web Simulator
+        </a>
+        <a href="#features" class="mobile-nav-link hover:text-emerald-400 transition-colors py-1.5">Features & Architecture</a>
+        <a href="#tests" class="mobile-nav-link hover:text-emerald-400 transition-colors py-1.5">100-Point Hardware Tests</a>
+        <a href="#scams" class="mobile-nav-link hover:text-emerald-400 transition-colors py-1.5">Scam Traps</a>
+        <a href="#pricing" class="mobile-nav-link hover:text-emerald-400 transition-colors py-1.5">Pricing & Lifetime Access</a>
+        <a href="#about" class="mobile-nav-link text-white hover:text-emerald-400 transition-colors py-1.5 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          About Us
+        </a>
+        <a href="#faq" class="mobile-nav-link hover:text-emerald-400 transition-colors py-1.5">Frequently Asked Questions</a>
+      </nav>
+      <div class="pt-3 border-t border-white/10 space-y-2">
+        <span class="text-xs text-slate-300 font-semibold">Switch Country:</span>
+        <div class="grid grid-cols-3 gap-2">
+          <button class="mobile-country-btn px-3 py-2.5 rounded-xl text-xs bg-[#0c101a] border border-white/15 text-white hover:text-white transition-all flex items-center justify-center gap-1.5" data-country="usa">
+            <span class="font-bold">🇺🇸 USA</span>
+            <span class="mobile-country-check text-emerald-400 hidden font-bold text-xs">✓</span>
+          </button>
+          <button class="mobile-country-btn px-3 py-2.5 rounded-xl text-xs bg-[#0c101a] border border-white/15 text-white hover:text-white transition-all flex items-center justify-center gap-1.5" data-country="canada">
+            <span class="font-bold">🇨🇦 Canada</span>
+            <span class="mobile-country-check text-emerald-400 hidden font-bold text-xs">✓</span>
+          </button>
+          <button class="mobile-country-btn px-3 py-2.5 rounded-xl text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold transition-all flex items-center justify-center gap-1.5" data-country="india">
+            <span class="font-bold">🇮🇳 India</span>
+            <span class="mobile-country-check text-emerald-400 font-bold text-xs">✓</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+    <!-- Ambient Glow Blobs with Smooth Floating Animation -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-brand-500/15 rounded-full blur-[140px] pointer-events-none -z-10 animate-float-slow"></div>
+    <div class="absolute top-1/3 left-1/4 w-[350px] h-[350px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none -z-10 animate-float-reverse"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <!-- Eyebrow Pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 to-emerald-500/15 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold mb-6 shadow-sm shadow-amber-500/10">
+        <span class="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+        🔥 Early Bird Offer: Limited Time <span class="price-personal">₹59</span> (Was <span class="price-personal-original">₹149</span>) • Universal Apple Silicon M1-M4
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl mx-auto leading-[1.1] mb-6">
+        Never buy a second-hand Mac without checking <span class="text-gradient-green">this first.</span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 font-normal leading-relaxed">
+        A single hidden flaw—a water-damaged speaker, swapped non-OEM battery, spoofed RAM, or corporate MDM cloud lock—can turn a bargain into thousands in unexpected repair losses. <strong class="text-white">MacCheck Pro</strong> probes 20+ kernel device trees in 120 seconds.
+      </p>
+
+      <!-- CTA Action Row -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <button data-buy-plan="personal" class="btn-primary w-full sm:w-auto text-base py-4 px-8 shadow-xl shadow-brand-500/25 flex items-center justify-center gap-2">
+          <svg class="w-5 h-5 text-dark-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Get Early Bird Access — <span class="line-through opacity-70 text-sm price-personal-original">₹149</span> <span class="price-personal font-black text-lg">₹59</span></span>
+        </button>
+        <a href="#simulator" class="btn-secondary w-full sm:w-auto text-base py-4 px-8 border-emerald-500/30 hover:border-emerald-400">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Try Web Simulator Live</span>
+        </a>
+      </div>
+
+      <!-- Trust Badges List -->
+      <div class="flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs text-slate-400 mb-16">
+        <span class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> 100% Offline & Private</span>
+        <span class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> 100% Read-Only & Safe</span>
+        <span class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Instant DMG Download</span>
+        <span class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> 30-Day Money Back Guarantee</span>
+      </div>
+
+      <!-- Hero Mockup: MacCheck Pro Dashboard Window -->
+      <div class="relative max-w-5xl mx-auto">
+        
+        <!-- Floating Pill Left: MDM Check -->
+        <div class="hidden lg:flex absolute -left-12 top-16 z-20 floating-stat glass-card rounded-2xl p-4 items-center gap-3 text-left max-w-xs border border-white/10 shadow-2xl">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">🛡️</div>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Security & MDM</div>
+            <div class="text-xs font-bold text-emerald-400">Zero Locks (Clean SSV)</div>
+            <div class="text-[10px] text-slate-400">Apple DEP Cloud Status: Verified</div>
+          </div>
+        </div>
+
+        <!-- Floating Pill Right: Battery Microcontroller -->
+        <div class="hidden lg:flex absolute -right-12 bottom-20 z-20 floating-stat-delayed glass-card rounded-2xl p-4 items-center gap-3 text-left max-w-xs border border-white/10 shadow-2xl">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">🔋</div>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">OEM Battery Health</div>
+            <div class="text-xs font-bold text-emerald-400">97.0% Raw Max Ratio</div>
+            <div class="text-[10px] text-slate-400">Supplier: Huizhou Desay (DSY)</div>
+          </div>
+        </div>
+
+        <!-- macOS Window Frame -->
+        <div class="macos-window">
+          <div class="macos-window-header">
+            <div class="macos-traffic-lights">
+              <span class="macos-dot red"></span>
+              <span class="macos-dot yellow"></span>
+              <span class="macos-dot green"></span>
+            </div>
+            <div class="macos-window-title">
+              <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>MacCheck Pro — Hardware Verification Suite</span>
+            </div>
+          </div>
+          <!-- Hero Screenshot -->
+          <div class="relative bg-dark-900 group overflow-hidden">
+            <img src="assets/images/dashboard-score.jpg" alt="MacCheck Pro Dashboard Score 100/100" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]" data-zoomable>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent pointer-events-none"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Problem Section: 4 Deadly Scams -->
+  <section id="scams" class="py-20 bg-dark-850 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <span class="text-xs font-semibold text-rose-400 uppercase tracking-widest bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">The Second-Hand Trap</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-4">Why macOS "About This Mac" is dangerously deceptive.</h2>
+        <p class="text-slate-400 text-base">Shady sellers know how to trick superficial UI dialogs. Here are the 4 common scams MacCheck Pro catches in seconds:</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Trap 1 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-500 reveal delay-100">
+          <div class="text-2xl mb-3">🧠</div>
+          <h3 class="text-lg font-bold text-white mb-2">The Spoofed RAM Scam</h3>
+          <p class="text-sm text-slate-400 mb-4">Sellers modify system plist strings so an 8GB Mac falsely displays 16GB or 24GB in About This Mac.</p>
+          <div class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20">
+            <strong>MacCheck Fix:</strong> Bypasses plists and queries kernel registers via <code>sysctl hw.memsize</code>.
+          </div>
+        </div>
+
+        <!-- Trap 2 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500 reveal delay-200">
+          <div class="text-2xl mb-3">🏢</div>
+          <h3 class="text-lg font-bold text-white mb-2">Hidden Corporate MDM Lock</h3>
+          <p class="text-sm text-slate-400 mb-4">A stolen or company-leased Mac works until you factory reset it at home, permanently bricking into a corporate login.</p>
+          <div class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20">
+            <strong>MacCheck Fix:</strong> Probes Apple DEP cloud status & profiles enrollment status to ensure zero corporate lock.
+          </div>
+        </div>
+
+        <!-- Trap 3 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-yellow-500 reveal delay-300">
+          <div class="text-2xl mb-3">🔋</div>
+          <h3 class="text-lg font-bold text-white mb-2">Fake "100%" Battery Health</h3>
+          <p class="text-sm text-slate-400 mb-4">Cheap 3rd-party replacement batteries reprogram cycle counters to 10 cycles, but overheat and degrade quickly.</p>
+          <div class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20">
+            <strong>MacCheck Fix:</strong> Decodes manufacturer hex data into verified Apple OEMs (ATL, Desay, Simplo, Sunwoda).
+          </div>
+        </div>
+
+        <!-- Trap 4 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-sky-500 reveal delay-400">
+          <div class="text-2xl mb-3">🖥️</div>
+          <h3 class="text-lg font-bold text-white mb-2">Swapped Cheap IPS Screen</h3>
+          <p class="text-sm text-slate-400 mb-4">Broken Liquid Retina XDR Mini-LED panels replaced with $80 standard IPS panels that lack 10,000-zone local dimming.</p>
+          <div class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20">
+            <strong>MacCheck Fix:</strong> Fullscreen pitch-black dimming test, True Tone ambient pairing & dead pixel sweep.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Feature Showcase (Tabbed Gallery) -->
+  <section id="tests" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Inspection Engine</span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-4 mb-4">9 Dedicated Hardware Verification Modules</h2>
+        <p class="text-slate-400 text-base">Click any test below to inspect the real interface and diagnostic capabilities of MacCheck Pro.</p>
+      </div>
+
+      <!-- Feature Tabs Bar -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+        <button class="feature-tab-btn active" data-feature="dashboard">
+          <span>📊</span>
+          <span>Dashboard & Score</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="audio">
+          <span>🔊</span>
+          <span>360° Spatial Audio</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="screen">
+          <span>🖥️</span>
+          <span>Liquid Retina XDR</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="keyboard">
+          <span>⌨️</span>
+          <span>Keyboard Matrix</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="camera">
+          <span>📷</span>
+          <span>Camera & Studio Mics</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="stress">
+          <span>⚡</span>
+          <span>120s Stress Benchmark</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="network">
+          <span>🌐</span>
+          <span>Wi-Fi 6 & Speed</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="playbook">
+          <span>📋</span>
+          <span>Physical Playbook</span>
+        </button>
+        <button class="feature-tab-btn" data-feature="certificate">
+          <span>📜</span>
+          <span>Inspection Certificate</span>
+        </button>
+      </div>
+
+      <!-- Feature Display Card -->
+      <div class="glass-card rounded-3xl p-6 lg:p-10 border border-white/10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left Info Column -->
+          <div class="lg:col-span-5 text-left">
+            <h3 id="feature-tab-title" class="text-2xl sm:text-3xl font-bold text-white mb-3">100-Point Apple Silicon Hardware Verification & Score</h3>
+            <p id="feature-tab-subtitle" class="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
+              Audits kernel device trees, physical memory allocations, logic board serial alignment, and corporate MDM/DEP enrollments.
+            </p>
+            <ul id="feature-tab-list" class="space-y-3 mb-8">
+              <li class="flex items-center gap-2 text-slate-300 text-sm"><span class="text-emerald-400 font-bold">✓</span> 100% Genuine Apple Silicon verification algorithm</li>
+              <li class="flex items-center gap-2 text-slate-300 text-sm"><span class="text-emerald-400 font-bold">✓</span> Anti-RAM Spoofing: Probes true kernel physical memory via sysctl</li>
+              <li class="flex items-center gap-2 text-slate-300 text-sm"><span class="text-emerald-400 font-bold">✓</span> Logic board serial alignment against chassis serial</li>
+              <li class="flex items-center gap-2 text-slate-300 text-sm"><span class="text-emerald-400 font-bold">✓</span> Zero MDM / DEP Corporate remote management check</li>
+            </ul>
+            <div class="flex items-center gap-4">
+              <button data-buy-plan="personal" class="btn-primary text-xs sm:text-sm py-2.5 px-6">
+                <span>Unlock All Tests</span>
+                <span class="price-personal font-bold">₹59</span>
+              </button>
+              <span class="text-xs text-slate-500">Click preview to enlarge</span>
+            </div>
+          </div>
+
+          <!-- Right Screenshot Preview -->
+          <div class="lg:col-span-7">
+            <div class="macos-window shadow-2xl">
+              <div class="macos-window-header">
+                <div class="macos-traffic-lights">
+                  <span class="macos-dot red"></span>
+                  <span class="macos-dot yellow"></span>
+                  <span class="macos-dot green"></span>
+                </div>
+                <div class="macos-window-title text-[11px]">Hardware Verification Mode</div>
+              </div>
+              <div class="relative bg-dark-900 group cursor-zoom-in">
+                <img id="feature-tab-img" src="assets/images/dashboard-score.jpg" alt="Dashboard Score" class="w-full h-auto object-cover transition-opacity duration-200" data-zoomable>
+                <div class="absolute inset-0 bg-brand-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span class="bg-dark-900/80 backdrop-blur-md px-3 py-1.5 rounded-full text-xs text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-lg">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                    Click to Enlarge
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Live Interactive In-Browser App Simulator -->
+  <section id="simulator" class="py-24 bg-dark-850 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold mb-3">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+          Live Web Simulator • Experience Before You Buy
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4">Test-Drive MacCheck Pro Live in Your Browser</h2>
+        <p class="text-slate-300 text-sm sm:text-base">
+          Click through the macOS modules below. Test your real keyboard keys, synthesize 80Hz woofer frequencies, and inspect live registers directly in your browser.
+        </p>
+      </div>
+
+      <!-- Simulated macOS Window -->
+      <div class="macos-window max-w-6xl mx-auto border border-white/15 shadow-2xl reveal-scale">
+        
+        <!-- Window Chrome Titlebar -->
+        <div class="macos-window-header justify-between">
+          <div class="macos-traffic-lights">
+            <span class="macos-dot red"></span>
+            <span class="macos-dot yellow"></span>
+            <span class="macos-dot green"></span>
+          </div>
+          <div class="macos-window-title text-xs font-medium text-slate-300 flex items-center gap-2">
+            <img src="assets/images/logo.png" alt="Icon" class="w-4 h-4 rounded">
+            <span>MacCheck Pro — Hardware Verification Suite (Interactive Web Simulator)</span>
+          </div>
+          <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full hidden sm:inline">
+            ● KERNEL SIMULATION ACTIVE
+          </span>
+        </div>
+
+        <!-- App Body (Sidebar + Content Panel) -->
+        <div class="grid grid-cols-1 md:grid-cols-12 min-h-[580px] bg-dark-900">
+          
+          <!-- Left App Sidebar -->
+          <div class="md:col-span-3 border-r border-white/10 p-3 sm:p-4 bg-dark-850/80 flex flex-col justify-between">
+            <div class="space-y-1">
+              
+              <!-- Brand Header in Sidebar -->
+              <div class="flex items-center gap-2.5 px-3 py-3 mb-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+                  🛡️
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white leading-tight">MacCheck Pro</div>
+                  <div class="text-[10px] text-emerald-400 font-medium">Hardware Verification</div>
+                </div>
+              </div>
+
+              <!-- Nav items -->
+              <div class="sim-nav-item active" data-sim-target="sim-tab-dashboard">
+                <span>⏱️</span>
+                <span>Dashboard & Score</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-battery">
+                <span>🔋</span>
+                <span class="flex-1">Battery & OEM Health</span>
+                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded font-mono font-bold">DEEP</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-network">
+                <span>📶</span>
+                <span class="flex-1">Network & Speed</span>
+                <span class="text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded font-mono">SPEED</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-screen">
+                <span>🖥️</span>
+                <span>Screen & Dimming</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-keyboard">
+                <span>⌨️</span>
+                <span class="flex-1">Keyboard Matrix</span>
+                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded font-mono font-bold">TYPE!</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-audio">
+                <span>🔊</span>
+                <span class="flex-1">360° Spatial Audio</span>
+                <span class="text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.2 rounded font-mono">80Hz</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-camera">
+                <span>📷</span>
+                <span>Camera & Mics</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-stress">
+                <span>⚡</span>
+                <span>120s Stress Test</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-playbook">
+                <span>📋</span>
+                <span class="flex-1">Physical Playbook</span>
+                <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded font-mono">10 PTS</span>
+              </div>
+              <div class="sim-nav-item" data-sim-target="sim-tab-certificate">
+                <span>📜</span>
+                <span class="flex-1">Certificate & Raw Logs</span>
+                <span class="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.2 rounded font-mono">AUDIT</span>
+              </div>
+            </div>
+
+            <!-- Sidebar Bottom Info Badge -->
+            <div class="mt-4 p-3 rounded-xl bg-dark-900 border border-white/5 text-[11px]">
+              <div class="text-white font-semibold flex items-center justify-between">
+                <span>Apple M2</span>
+                <span class="text-emerald-400 font-bold">100/100</span>
+              </div>
+              <div class="text-slate-400 text-[10px]">8GB RAM • Sequoia Verified</div>
+            </div>
+          </div>
+
+          <!-- Right Content Views Area -->
+          <div class="md:col-span-9 p-4 sm:p-6 overflow-y-auto max-h-[640px] bg-dark-900/95 relative">
+            
+            <!-- VIEW 1: Dashboard & Score (Default) -->
+            <div id="sim-tab-dashboard" class="sim-view-pane space-y-5">
+              
+              <!-- Scanning progress bar (hidden by default) -->
+              <div class="hidden">
+                <div class="flex justify-between text-xs text-emerald-400 font-mono mb-1">
+                  <span id="sim-scan-status-pill">Auditing sysctl hw.memsize...</span>
+                  <span>Scanning</span>
+                </div>
+                <div class="w-full bg-dark-800 rounded-full h-1.5 overflow-hidden">
+                  <div id="sim-scan-progress" class="bg-gradient-to-r from-brand-500 to-emerald-300 h-1.5 transition-all duration-300 w-0"></div>
+                </div>
+              </div>
+
+              <!-- Top Score Banner -->
+              <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col sm:flex-row items-center gap-6">
+                <!-- Score Circle -->
+                <div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"></circle>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#00F293" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="0" stroke-linecap="round"></circle>
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-2xl font-extrabold text-white">100</span>
+                    <span class="text-[8px] uppercase tracking-wider text-slate-400">OUT OF 100</span>
+                  </div>
+                </div>
+
+                <!-- Score Info & Actions -->
+                <div class="flex-1 text-center sm:text-left">
+                  <div class="flex flex-wrap items-center gap-2 mb-1 justify-center sm:justify-start">
+                    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                      ✓ EXCELLENT / 100% GENUINE APPLE SILICON
+                    </span>
+                  </div>
+                  <h3 class="text-base sm:text-lg font-bold text-white mb-1">100% Genuine Apple Silicon - Verified</h3>
+                  <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+                    All hardware registers verify authentic Apple components, OEM battery, genuine Liquid Retina XDR, active security seals, and zero MDM restrictions.
+                  </p>
+                  
+                  <div class="flex flex-wrap items-center gap-2.5 justify-center sm:justify-start">
+                    <button id="sim-rescan-btn" class="btn-primary text-xs py-2 px-4 shadow-sm">
+                      <svg class="w-3.5 h-3.5 text-dark-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                      <span>Re-Scan Live Mac</span>
+                    </button>
+                    <button onclick="showToast('ℹ️ Sample M1 Pro audit loaded: Score 94/100, 89% battery health.')" class="btn-secondary text-xs py-2 px-3">
+                      Sample M1 Pro Audit
+                    </button>
+                    <button onclick="document.querySelector('[data-sim-target=\'sim-tab-certificate\']').click()" class="btn-secondary text-xs py-2 px-3">
+                      Export Report
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4 Detail Register Cards -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Card 1: Silicon -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span class="text-emerald-400">🧠</span> Silicon & Architecture
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">20/20</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>SoC Chip:</span> <strong class="text-white">Apple M2</strong></div>
+                    <div class="flex justify-between"><span>True Physical RAM:</span> <strong class="text-emerald-400">8.0 GB (sysctl)</strong></div>
+                    <div class="flex justify-between"><span>RAM Spoofing Status:</span> <span class="text-emerald-400">✓ Clean</span></div>
+                    <div class="flex justify-between"><span>Logic Board Serial:</span> <span class="text-slate-400">Aligned (Match)</span></div>
+                  </div>
+                </div>
+
+                <!-- Card 2: Security & MDM -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span class="text-emerald-400">🛡️</span> Security & MDM Lockdown
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">20/20</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>MDM Remote Profile:</span> <strong class="text-emerald-400">No (Clean)</strong></div>
+                    <div class="flex justify-between"><span>Apple DEP Status:</span> <strong class="text-emerald-400">Client Not Enrolled</strong></div>
+                    <div class="flex justify-between"><span>System Integrity (SIP):</span> <span class="text-emerald-400">Enabled</span></div>
+                    <div class="flex justify-between"><span>Signed Volume (SSV):</span> <span class="text-emerald-400">Cryptographically Sealed</span></div>
+                  </div>
+                </div>
+
+                <!-- Card 3: Battery OEM -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span class="text-emerald-400">🔋</span> Battery OEM & Raw Health
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">20/20</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Manufacturer:</span> <strong class="text-white">Desay (DSY) - OEM</strong></div>
+                    <div class="flex justify-between"><span>Real Health Ratio:</span> <strong class="text-emerald-400">97.0% (5890/6075 mAh)</strong></div>
+                    <div class="flex justify-between"><span>Cycle Count:</span> <span>225 cycles</span></div>
+                    <div class="flex justify-between"><span>Fast Charger:</span> <span class="text-slate-400">96W (Apple Inc.)</span></div>
+                  </div>
+                </div>
+
+                <!-- Card 4: Liquid Retina XDR -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span class="text-emerald-400">🖥️</span> Liquid Retina XDR Display
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">15/15</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Display Panel:</span> <strong class="text-white">Built-in Liquid Retina</strong></div>
+                    <div class="flex justify-between"><span>Native Resolution:</span> <span>2560 x 1664</span></div>
+                    <div class="flex justify-between"><span>ProMotion Refresh:</span> <span class="text-white">60Hz / 120Hz</span></div>
+                    <div class="flex justify-between"><span>True Tone Ambient:</span> <strong class="text-emerald-400">Factory Calibrated</strong></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- VIEW 2: Battery & OEM Health (Deep Microcontroller Telemetry & 5-Min Drain Test) -->
+            <div id="sim-tab-battery" class="sim-view-pane hidden space-y-5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span class="text-emerald-400">🔋</span> Deep Battery Telemetry & OEM Verification
+                  </h4>
+                  <p class="text-xs text-slate-400">I/O Kit Smart Battery controller audit, cell health, authentic Apple vendor check & 5-min drain analysis.</p>
+                </div>
+                <button id="sim-battery-refresh-btn" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Refresh Telemetry</span>
+                </button>
+              </div>
+
+              <!-- Top Battery Banner: Circular SVG Meter & OEM Specs -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center glass-card p-4 sm:p-5 rounded-2xl border border-white/10 bg-dark-900/80">
+                <!-- Circular Charge Meter -->
+                <div class="sm:col-span-4 flex flex-col items-center justify-center text-center">
+                  <div class="relative w-28 h-28 flex items-center justify-center">
+                    <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"></circle>
+                      <circle id="sim-battery-circle" cx="50" cy="50" r="42" fill="none" stroke="url(#batteryGrad)" stroke-width="8" stroke-dasharray="264" stroke-dashoffset="31.6" stroke-linecap="round" class="transition-all duration-700"></circle>
+                      <defs>
+                        <linearGradient id="batteryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#10b981"/>
+                          <stop offset="100%" stop-color="#059669"/>
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <span id="sim-battery-pct" class="text-2xl font-black text-white font-mono leading-none">88%</span>
+                      <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-1">Discharging</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 text-[11px] text-slate-400">Projected Runtime: <strong class="text-slate-200">~14.2 Hours</strong></div>
+                </div>
+
+                <!-- OEM Pack Verification & Key Health Stats -->
+                <div class="sm:col-span-8 space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                    <div class="flex items-center gap-2">
+                      <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">AUTHENTIC APPLE OEM PACK</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded">
+                      Vendor: <strong>Desay Corporation</strong>
+                    </span>
+                  </div>
+
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
+                    <div class="bg-dark-950/70 p-2.5 rounded-xl border border-white/5">
+                      <span class="text-[10px] text-slate-400 block">Cycle Count</span>
+                      <span class="text-sm font-bold text-white font-mono">48</span>
+                      <span class="text-[9px] text-emerald-400 block">Normal (&lt;1000)</span>
+                    </div>
+                    <div class="bg-dark-950/70 p-2.5 rounded-xl border border-white/5">
+                      <span class="text-[10px] text-slate-400 block">Max Health</span>
+                      <span class="text-sm font-bold text-emerald-400 font-mono">98.0%</span>
+                      <span class="text-[9px] text-slate-400 block">5,001 mAh</span>
+                    </div>
+                    <div class="bg-dark-950/70 p-2.5 rounded-xl border border-white/5">
+                      <span class="text-[10px] text-slate-400 block">Pack Temp</span>
+                      <span class="text-sm font-bold text-white font-mono">28.4°C</span>
+                      <span class="text-[9px] text-emerald-400 block">Optimal</span>
+                    </div>
+                    <div class="bg-dark-950/70 p-2.5 rounded-xl border border-white/5">
+                      <span class="text-[10px] text-slate-400 block">Cell Voltage</span>
+                      <span class="text-sm font-bold text-white font-mono">12.82 V</span>
+                      <span class="text-[9px] text-slate-400 block">3-Cell Series</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5-Minute Live Automated Drain Test Component -->
+              <div class="glass-card p-4 sm:p-5 rounded-2xl border border-white/10 bg-dark-900/80 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                  <div>
+                    <h5 class="text-xs font-bold text-white flex items-center gap-2">
+                      <span>⏱️ 5-Minute Automated Battery Drain Test</span>
+                      <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Active Real-Time Simulation</span>
+                    </h5>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Measures real-world active discharge gradient to catch rapid drop-offs, internal micro-shorts, or worn cells.</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button id="sim-drain-start-btn" class="btn-primary text-xs py-1.5 px-3.5 flex items-center gap-1.5">
+                      <svg class="w-3.5 h-3.5 text-dark-900" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                      <span id="sim-drain-btn-text">Start 5-Min Drain Test</span>
+                    </button>
+                    <button id="sim-drain-reset-btn" class="btn-secondary text-xs py-1.5 px-2.5 text-slate-400 hover:text-white" title="Reset Drain Timer">
+                      ↺
+                    </button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div class="p-2.5 rounded-xl bg-dark-950/60 border border-white/5">
+                    <span class="text-[10px] text-slate-400 block uppercase">Countdown</span>
+                    <span id="sim-drain-countdown" class="text-xl font-bold font-mono text-emerald-400">05:00</span>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-dark-950/60 border border-white/5">
+                    <span class="text-[10px] text-slate-400 block uppercase">Discharge Rate</span>
+                    <span id="sim-drain-rate" class="text-xl font-bold font-mono text-white">0.0% / 5m</span>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-dark-950/60 border border-white/5">
+                    <span class="text-[10px] text-slate-400 block uppercase">Capacity Drop</span>
+                    <span id="sim-drain-drop" class="text-xl font-bold font-mono text-white">0 mAh</span>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-dark-950/60 border border-white/5">
+                    <span class="text-[10px] text-slate-400 block uppercase">Drain Verdict</span>
+                    <span id="sim-drain-verdict" class="text-xs font-bold text-emerald-400 mt-1 block">Ready to Begin</span>
+                  </div>
+                </div>
+
+                <div class="text-[11px] font-mono text-slate-400 flex items-center justify-between px-1">
+                  <span>Serial: <strong class="text-slate-300">F8Y2456004ML0A7B9</strong></span>
+                  <span>Smart Battery Microcontroller: <strong class="text-emerald-400">TI BQ40Z651</strong></span>
+                </div>
+              </div>
+
+              <!-- Raw I/O Kit Smart Battery Microcontroller Registers -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                  <span class="font-semibold text-white">I/O Kit AppleSmartBattery Direct Register Dump</span>
+                  <span class="font-mono text-[10px] text-slate-400">Source: ioreg -r -c AppleSmartBattery</span>
+                </div>
+                <div class="bg-dark-950 p-3 rounded-xl border border-white/10 font-mono text-[11px] text-slate-300 overflow-x-auto">
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-1.5 gap-x-4">
+                    <div><span class="text-slate-500">"Manufacturer" =</span> <span class="text-emerald-400">"Desay"</span></div>
+                    <div><span class="text-slate-500">"DeviceName" =</span> <span class="text-white">"bq40z651"</span></div>
+                    <div><span class="text-slate-500">"DesignCapacity" =</span> <span class="text-white">5103</span></div>
+                    <div><span class="text-slate-500">"MaxCapacity" =</span> <span class="text-emerald-400">5001</span></div>
+                    <div><span class="text-slate-500">"CurrentCapacity" =</span> <span class="text-white">4400</span></div>
+                    <div><span class="text-slate-500">"CycleCount" =</span> <span class="text-emerald-400">48</span></div>
+                    <div><span class="text-slate-500">"Temperature" =</span> <span class="text-white">2984 (28.4°C)</span></div>
+                    <div><span class="text-slate-500">"Voltage" =</span> <span class="text-white">12820 mV</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 3: Network & Speed Benchmark (NEW) -->
+            <div id="sim-tab-network" class="sim-view-pane hidden space-y-5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span class="text-sky-400">📶</span> Network & Internet Speed Benchmark
+                  </h4>
+                  <p class="text-xs text-slate-400">Audit Wi-Fi RF signal quality, PHY standards (802.11ax/ac), DNS routing, ping latency, and live throughput.</p>
+                </div>
+                <button id="sim-network-refresh-btn" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Refresh Wi-Fi</span>
+                </button>
+              </div>
+
+              <!-- Speed Test Hero Card -->
+              <div class="glass-card p-5 rounded-2xl border border-white/10 bg-dark-900/80 space-y-4">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center text-center">
+                  <!-- Download Gauge -->
+                  <div class="space-y-1">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold flex items-center justify-center gap-1">
+                      <span class="text-emerald-400">↓</span> DOWNLOAD
+                    </span>
+                    <div id="sim-net-download" class="text-3xl font-black font-mono text-emerald-400">428.5</div>
+                    <span class="text-[10px] text-slate-500 font-mono">Mbps Throughput</span>
+                  </div>
+
+                  <!-- Upload Gauge -->
+                  <div class="space-y-1">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold flex items-center justify-center gap-1">
+                      <span class="text-sky-400">↑</span> UPLOAD
+                    </span>
+                    <div id="sim-net-upload" class="text-3xl font-black font-mono text-sky-400">115.4</div>
+                    <span class="text-[10px] text-slate-500 font-mono">Mbps Throughput</span>
+                  </div>
+
+                  <!-- Ping Latency -->
+                  <div class="space-y-1">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">LATENCY</span>
+                    <div id="sim-net-ping" class="text-3xl font-black font-mono text-white">14.2</div>
+                    <span class="text-[10px] text-slate-500 font-mono">ms (Apple CDN)</span>
+                  </div>
+
+                  <!-- Jitter -->
+                  <div class="space-y-1">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">JITTER</span>
+                    <div id="sim-net-jitter" class="text-3xl font-black font-mono text-emerald-400">2.1</div>
+                    <span class="text-[10px] text-slate-500 font-mono">ms (Stable)</span>
+                  </div>
+                </div>
+
+                <!-- Run Speed Test Action Row -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-white/10">
+                  <div class="text-xs text-slate-300 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span id="sim-net-status">Server: <strong>Apple CDN Edge • Low Latency Gateway</strong></span>
+                  </div>
+                  <button id="sim-run-speedtest-btn" class="btn-primary text-xs py-2 px-5 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-dark-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span>Run Speed Test</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Wi-Fi RF Subsystem & Bluetooth Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Card 1: Wi-Fi RF Subsystem -->
+                <div class="p-4 rounded-xl bg-dark-950/70 border border-white/5 space-y-3">
+                  <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>📶</span> Wi-Fi Subsystem (en0)
+                    </span>
+                    <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">CONNECTED</span>
+                  </div>
+                  <div class="text-[11px] font-mono text-slate-300 space-y-1.5">
+                    <div class="flex justify-between"><span>SSID Network:</span> <strong class="text-white">Studio-Secure-5G</strong></div>
+                    <div class="flex justify-between"><span>PHY Standard:</span> <strong class="text-emerald-400">Wi-Fi 6 (802.11ax)</strong></div>
+                    <div class="flex justify-between"><span>Channel Band:</span> <span>5 GHz (160 MHz Width)</span></div>
+                    <div class="flex justify-between"><span>RSSI Signal:</span> <strong class="text-white">-48 dBm (Strong)</strong></div>
+                    <div class="flex justify-between"><span>Noise Floor:</span> <span>-92 dBm (SNR: 44 dB)</span></div>
+                    <div class="flex justify-between"><span>Transmit Rate:</span> <strong class="text-emerald-400">1,201 Mbps (Tx)</strong></div>
+                  </div>
+                </div>
+
+                <!-- Card 2: Bluetooth & Gateway Details -->
+                <div class="p-4 rounded-xl bg-dark-950/70 border border-white/5 space-y-3">
+                  <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>⚡</span> Bluetooth Controller & Routing
+                    </span>
+                    <span class="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded">BLUETOOTH 5.3</span>
+                  </div>
+                  <div class="text-[11px] font-mono text-slate-300 space-y-1.5">
+                    <div class="flex justify-between"><span>Bluetooth State:</span> <strong class="text-emerald-400">Powered On (Active)</strong></div>
+                    <div class="flex justify-between"><span>Hardware Bus:</span> <span>Apple Silicon Native PCIe</span></div>
+                    <div class="flex justify-between"><span>AirDrop & Sidecar:</span> <strong class="text-white">Fully Supported</strong></div>
+                    <div class="flex justify-between"><span>IPv4 Local IP:</span> <span>192.168.1.145</span></div>
+                    <div class="flex justify-between"><span>Router Gateway:</span> <span>192.168.1.1</span></div>
+                    <div class="flex justify-between"><span>DNS Resolvers:</span> <strong class="text-slate-300">1.1.1.1, 8.8.8.8</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 4: Screen & Dimming -->
+            <div id="sim-tab-screen" class="sim-view-pane hidden space-y-5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white">Liquid Retina XDR & Dead Pixel Checker</h4>
+                  <p class="text-xs text-slate-400">Test Mini-LED local dimming and dead pixels right in your browser.</p>
+                </div>
+                <button id="sim-launch-fs-btn" class="btn-primary text-xs py-1.5 px-3.5">
+                  ⛶ Launch Full-Screen
+                </button>
+              </div>
+
+              <!-- Interactive Canvas -->
+              <div id="sim-screen-preview" class="w-full h-56 rounded-xl border border-white/15 bg-black flex flex-col items-center justify-center p-6 text-center transition-colors duration-200">
+                <span id="sim-screen-color-name" class="text-sm font-bold text-white bg-dark-900/80 px-3 py-1 rounded-full border border-white/20 mb-2">
+                  Pure Black (#000000)
+                </span>
+                <p class="text-xs text-slate-400 max-w-md">
+                  In dim light, the background on authentic Mini-LED or OLED screens stays pitch-black with zero edge glow.
+                </p>
+              </div>
+
+              <!-- Color Swatches Bar -->
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <button class="color-swatch-btn active bg-black text-white" data-color="#000000" data-name="Pure Black (#000000)">Black</button>
+                <button class="color-swatch-btn bg-white text-dark-900" data-color="#ffffff" data-name="Pure White (#FFFFFF)">White</button>
+                <button class="color-swatch-btn bg-neutral-700 text-white" data-color="#404040" data-name="25% Grey (#404040)">25% Grey</button>
+                <button class="color-swatch-btn bg-red-600 text-white" data-color="#dc2626" data-name="Solid Red (#DC2626)">Red</button>
+                <button class="color-swatch-btn bg-emerald-600 text-white" data-color="#059669" data-name="Solid Green (#059669)">Green</button>
+                <button class="color-swatch-btn bg-blue-600 text-white" data-color="#2563eb" data-name="Solid Blue (#2563EB)">Blue</button>
+              </div>
+            </div>
+
+            <!-- VIEW 3: Real-Time Keyboard Matrix (LIVE TYPING TEST) -->
+            <div id="sim-tab-keyboard" class="sim-view-pane hidden space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white">Real-Time Keyboard Matrix & Key Tester</h4>
+                  <p class="text-xs text-emerald-400 font-medium">👉 Start pressing keys on your physical Mac keyboard now!</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
+                    <span id="sim-tested-keys-count">0</span> / 77 Keys Verified
+                  </span>
+                  <button id="sim-mark-fkeys-btn" class="btn-secondary text-[11px] py-1 px-2.5">Mark F1-F12</button>
+                  <button id="sim-reset-keys-btn" class="btn-secondary text-[11px] py-1 px-2.5">Reset</button>
+                </div>
+              </div>
+
+              <!-- Interactive Mac Keyboard Grid -->
+              <div class="bg-dark-950 p-3 sm:p-4 rounded-2xl border border-white/10 overflow-x-auto select-none space-y-1.5 text-center">
+                
+                <!-- Row 1: Esc, Function Keys, TouchID -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key" data-code="Escape" data-key="escape">Esc</div>
+                  <div class="mac-key" data-code="F1">F1</div>
+                  <div class="mac-key" data-code="F2">F2</div>
+                  <div class="mac-key" data-code="F3">F3</div>
+                  <div class="mac-key" data-code="F4">F4</div>
+                  <div class="mac-key" data-code="F5">F5</div>
+                  <div class="mac-key" data-code="F6">F6</div>
+                  <div class="mac-key" data-code="F7">F7</div>
+                  <div class="mac-key" data-code="F8">F8</div>
+                  <div class="mac-key" data-code="F9">F9</div>
+                  <div class="mac-key" data-code="F10">F10</div>
+                  <div class="mac-key" data-code="F11">F11</div>
+                  <div class="mac-key" data-code="F12">F12</div>
+                  <div class="mac-key bg-dark-800" data-code="TouchID">TouchID</div>
+                </div>
+
+                <!-- Row 2: Numbers -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key" data-code="Backquote" data-key="`">~</div>
+                  <div class="mac-key" data-code="Digit1" data-key="1">1</div>
+                  <div class="mac-key" data-code="Digit2" data-key="2">2</div>
+                  <div class="mac-key" data-code="Digit3" data-key="3">3</div>
+                  <div class="mac-key" data-code="Digit4" data-key="4">4</div>
+                  <div class="mac-key" data-code="Digit5" data-key="5">5</div>
+                  <div class="mac-key" data-code="Digit6" data-key="6">6</div>
+                  <div class="mac-key" data-code="Digit7" data-key="7">7</div>
+                  <div class="mac-key" data-code="Digit8" data-key="8">8</div>
+                  <div class="mac-key" data-code="Digit9" data-key="9">9</div>
+                  <div class="mac-key" data-code="Digit0" data-key="0">0</div>
+                  <div class="mac-key" data-code="Minus" data-key="-">-</div>
+                  <div class="mac-key" data-code="Equal" data-key="=">=</div>
+                  <div class="mac-key flex-1" data-code="Backspace" data-key="backspace">Delete</div>
+                </div>
+
+                <!-- Row 3: QWERTY -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key w-12" data-code="Tab" data-key="tab">Tab</div>
+                  <div class="mac-key" data-code="KeyQ" data-key="q">Q</div>
+                  <div class="mac-key" data-code="KeyW" data-key="w">W</div>
+                  <div class="mac-key" data-code="KeyE" data-key="e">E</div>
+                  <div class="mac-key" data-code="KeyR" data-key="r">R</div>
+                  <div class="mac-key" data-code="KeyT" data-key="t">T</div>
+                  <div class="mac-key" data-code="KeyY" data-key="y">Y</div>
+                  <div class="mac-key" data-code="KeyU" data-key="u">U</div>
+                  <div class="mac-key" data-code="KeyI" data-key="i">I</div>
+                  <div class="mac-key" data-code="KeyO" data-key="o">O</div>
+                  <div class="mac-key" data-code="KeyP" data-key="p">P</div>
+                  <div class="mac-key" data-code="BracketLeft" data-key="[">[</div>
+                  <div class="mac-key" data-code="BracketRight" data-key="]">]</div>
+                  <div class="mac-key" data-code="Backslash" data-key="\">\</div>
+                </div>
+
+                <!-- Row 4: ASDF -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key w-14" data-code="CapsLock" data-key="capslock">Caps</div>
+                  <div class="mac-key" data-code="KeyA" data-key="a">A</div>
+                  <div class="mac-key" data-code="KeyS" data-key="s">S</div>
+                  <div class="mac-key" data-code="KeyD" data-key="d">D</div>
+                  <div class="mac-key" data-code="KeyF" data-key="f">F</div>
+                  <div class="mac-key" data-code="KeyG" data-key="g">G</div>
+                  <div class="mac-key" data-code="KeyH" data-key="h">H</div>
+                  <div class="mac-key" data-code="KeyJ" data-key="j">J</div>
+                  <div class="mac-key" data-code="KeyK" data-key="k">K</div>
+                  <div class="mac-key" data-code="KeyL" data-key="l">L</div>
+                  <div class="mac-key" data-code="Semicolon" data-key=";">;</div>
+                  <div class="mac-key" data-code="Quote" data-key="'">'</div>
+                  <div class="mac-key flex-1" data-code="Enter" data-key="enter">Return</div>
+                </div>
+
+                <!-- Row 5: ZXCV -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key w-16" data-code="ShiftLeft" data-key="shift">Shift</div>
+                  <div class="mac-key" data-code="KeyZ" data-key="z">Z</div>
+                  <div class="mac-key" data-code="KeyX" data-key="x">X</div>
+                  <div class="mac-key" data-code="KeyC" data-key="c">C</div>
+                  <div class="mac-key" data-code="KeyV" data-key="v">V</div>
+                  <div class="mac-key" data-code="KeyB" data-key="b">B</div>
+                  <div class="mac-key" data-code="KeyN" data-key="n">N</div>
+                  <div class="mac-key" data-code="KeyM" data-key="m">M</div>
+                  <div class="mac-key" data-code="Comma" data-key=",">,</div>
+                  <div class="mac-key" data-code="Period" data-key=".">.</div>
+                  <div class="mac-key" data-code="Slash" data-key="/">/</div>
+                  <div class="mac-key flex-1" data-code="ShiftRight" data-key="shift">Shift</div>
+                </div>
+
+                <!-- Row 6: Bottom Row -->
+                <div class="flex justify-between gap-1 min-w-[580px]">
+                  <div class="mac-key" data-code="Fn">fn</div>
+                  <div class="mac-key" data-code="ControlLeft" data-key="control">Control</div>
+                  <div class="mac-key" data-code="AltLeft" data-key="alt">Option</div>
+                  <div class="mac-key w-14" data-code="MetaLeft" data-key="meta">⌘ Cmd</div>
+                  <div class="mac-key flex-1" data-code="Space" data-key=" ">Space</div>
+                  <div class="mac-key w-14" data-code="MetaRight" data-key="meta">⌘ Cmd</div>
+                  <div class="mac-key" data-code="AltRight" data-key="alt">Option</div>
+                  <div class="mac-key" data-code="ArrowLeft" data-key="arrowleft">←</div>
+                  <div class="mac-key" data-code="ArrowUp" data-key="arrowup">↑/↓</div>
+                  <div class="mac-key" data-code="ArrowRight" data-key="arrowright">→</div>
+                </div>
+
+              </div>
+              <div class="text-[11px] text-slate-400 bg-dark-800/60 p-2.5 rounded-lg border border-white/5">
+                💡 <strong>Inspection Pro-Tip:</strong> Press Space, Enter, and Delete from their outer corners to test stabilizer balance for sticky keys caused by previous liquid spills.
+              </div>
+            </div>
+
+            <!-- VIEW 4: 360° Spatial Audio & Woofer Diagnostics -->
+            <div id="sim-tab-audio" class="sim-view-pane hidden space-y-5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white">360° Cinematic Spatial Audio & Woofer Diagnostics</h4>
+                  <p class="text-xs text-slate-400">Generates real Web Audio API frequencies to test your Mac speakers for buzzing.</p>
+                </div>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-mono">WebAudio Engine</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+                <!-- Radar Visualizer -->
+                <div class="sm:col-span-5 flex flex-col items-center justify-center p-4">
+                  <div class="radar-orbit">
+                    <div class="radar-orb"></div>
+                    <div class="text-center">
+                      <div class="text-2xl mb-1">🎧</div>
+                      <div class="text-[10px] text-emerald-400 font-mono font-bold">SPATIAL RADAR</div>
+                      <div class="text-[9px] text-slate-400">360° Sound Orbit</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tone Buttons -->
+                <div class="sm:col-span-7 space-y-3">
+                  <button id="sim-audio-360-btn" class="btn-primary w-full text-xs py-2.5 flex items-center justify-center gap-2">
+                    <span>▶ Start 360° Cinematic Test</span>
+                  </button>
+
+                  <div class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">80Hz Sub-Bass Woofer Check (Turn Volume to 80%)</div>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button id="sim-audio-left-woofer" class="btn-secondary text-[11px] py-2 px-2">◀ Left (80Hz)</button>
+                    <button id="sim-audio-right-woofer" class="btn-secondary text-[11px] py-2 px-2">Right (80Hz) ▶</button>
+                    <button id="sim-audio-stereo-woofer" class="btn-secondary text-[11px] py-2 px-2 text-emerald-400 border-emerald-500/30">Stereo (80Hz)</button>
+                  </div>
+
+                  <div class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">440Hz Tweeter & Stereo Separation Check</div>
+                  <button id="sim-audio-tweeters" class="btn-secondary w-full text-xs py-2">
+                    Test Stereo Tweeters (440Hz Tone)
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-400 bg-dark-800/60 p-3 rounded-xl border border-white/5">
+                <span class="text-emerald-400 font-bold">✓ Pass Criteria:</span> Listen at 80% volume. Sound should be clear, punchy, and completely free of rattling, buzzing, distortion, or membrane dropouts.
+              </div>
+            </div>
+
+            <!-- VIEW 5: Camera & Mics -->
+            <div id="sim-tab-camera" class="sim-view-pane hidden space-y-5">
+              <div class="border-b border-white/10 pb-3">
+                <h4 class="text-sm font-bold text-white">FaceTime HD Camera & Studio Mic Array</h4>
+                <p class="text-xs text-slate-400">Verifies 1080p optical sensor clarity and 3-mic array audio level RMS.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Camera Box -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 text-center flex flex-col items-center justify-center h-52">
+                  <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-3">
+                    📷
+                  </div>
+                  <span class="text-xs font-bold text-white mb-1">FaceTime HD Camera (Connected)</span>
+                  <p class="text-[10px] text-slate-400 mb-4">Clean green hardware LED illuminates next to notch.</p>
+                  <button onclick="showToast('✅ Camera sensor optical clarity verified (1080p RGB matrix healthy).')" class="btn-secondary text-xs py-1.5 px-3">
+                    Test Camera Sensor
+                  </button>
+                </div>
+
+                <!-- Mic VU Box -->
+                <div class="glass-card p-4 rounded-xl border border-white/5 flex flex-col justify-between h-52">
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                        <span class="text-emerald-400">🎙️</span> Studio 3-Mic Array
+                      </span>
+                      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">ACTIVE RMS</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">Live ambient sound input level meter:</p>
+                  </div>
+
+                  <!-- Animated VU Meter -->
+                  <div class="space-y-1.5 my-auto">
+                    <div class="flex justify-between text-[11px] font-mono">
+                      <span class="text-slate-400">Input Level:</span>
+                      <span class="text-emerald-400 font-bold">38%</span>
+                    </div>
+                    <div class="w-full bg-dark-800 rounded-full h-2 overflow-hidden">
+                      <div class="bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 h-2 w-[38%] animate-pulse"></div>
+                    </div>
+                  </div>
+
+                  <p class="text-[10px] text-slate-500">
+                    Waveform fluctuates cleanly between 30% and 75% without clipping.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 6: 120s Stress Test -->
+            <div id="sim-tab-stress" class="sim-view-pane hidden space-y-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white">120-Second CPU & Memory Allocation Stress Test</h4>
+                  <p class="text-xs text-slate-400">Wires real physical memory pages to detect thermal throttling and faulty solder balls.</p>
+                </div>
+                <button id="sim-stress-start-btn" class="btn-primary text-xs py-2 px-4">
+                  ▶ Start 2-Minute Stress Test
+                </button>
+              </div>
+
+              <!-- Stats Row -->
+              <div class="grid grid-cols-3 gap-3">
+                <div class="glass-card p-3 rounded-xl border border-white/5 text-center">
+                  <div class="text-[10px] uppercase text-slate-400">Time Remaining</div>
+                  <div id="sim-stress-timer" class="text-xl font-bold font-mono text-emerald-400">120s</div>
+                </div>
+                <div class="glass-card p-3 rounded-xl border border-white/5 text-center">
+                  <div class="text-[10px] uppercase text-slate-400">Wired RAM</div>
+                  <div id="sim-stress-wiredram" class="text-xl font-bold font-mono text-white">0 MB</div>
+                </div>
+                <div class="glass-card p-3 rounded-xl border border-white/5 text-center">
+                  <div class="text-[10px] uppercase text-slate-400">CPU Load</div>
+                  <div id="sim-stress-cpuload" class="text-xl font-bold font-mono text-emerald-400">0%</div>
+                </div>
+              </div>
+
+              <!-- Live Execution Log Terminal -->
+              <div class="bg-dark-950 p-3 rounded-xl border border-white/10 font-mono text-[11px] text-slate-300 h-44 overflow-y-auto" id="sim-stress-log">
+                <div class="text-slate-500">// Ready to initiate stress testing. Click "Start 2-Minute Stress Test" above.</div>
+              </div>
+            </div>
+
+            <!-- VIEW 9: Physical Playbook (Full 10-Point Checklist) -->
+            <div id="sim-tab-playbook" class="sim-view-pane hidden space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                <div>
+                  <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span class="text-amber-400">📋</span> Physical, Port & Factory Gate Playbook
+                  </h4>
+                  <p class="text-xs text-slate-400">10-point hardware checklist for physical faults software alone cannot touch.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                    <span id="sim-playbook-count">0</span> / 10 Verified
+                  </span>
+                  <span id="sim-playbook-pct" class="text-xs font-mono font-bold text-white bg-white/10 px-2 py-1 rounded-lg">
+                    0%
+                  </span>
+                  <button id="sim-playbook-mark-all-btn" class="btn-primary text-xs py-1.5 px-2.5 whitespace-nowrap">
+                    ✓ Mark All Passed
+                  </button>
+                  <button id="sim-playbook-reset-btn" class="btn-secondary text-xs py-1.5 px-2 text-slate-400 hover:text-white" title="Reset checklist">
+                    ↺
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 max-h-[460px] overflow-y-auto pr-1">
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">1. Chassis Flatness & Battery Swelling</strong>
+                    <span class="text-slate-400 text-[11px]">Place Mac on flat table, press all 4 corners (no wobble). Trackpad must click cleanly across all corners (mushy click = swollen battery).</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">2. Bottom Plate Pentalobe Screws</strong>
+                    <span class="text-slate-400 text-[11px]">Inspect all 8 screws with flashlight. Pass: No stripped screw heads, no chipped anodization or missing screws.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">3. Display Hinge & Lid-Angle Sensor</strong>
+                    <span class="text-slate-400 text-[11px]">Slowly tilt lid between 90° and 135° watching for flickering lines. Instant sleep when closed within 1cm.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">4. Touch ID Cryptographic Pairing</strong>
+                    <span class="text-slate-400 text-[11px]">Enrolls fingerprint instantly and unlocks. Fails if sensor or logic board was swapped without Apple calibration.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">5. All Thunderbolt 4 / USB-C Ports (Data + Power)</strong>
+                    <span class="text-slate-400 text-[11px]">Test both high-speed USB-C data transfer and charging power delivery on every individual port.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">6. MagSafe 3, HDMI & SDXC Slot</strong>
+                    <span class="text-slate-400 text-[11px]">MagSafe light illuminates (amber/green), external HDMI display connects, SD card mounts immediately.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">7. Parts and Service History Check</strong>
+                    <span class="text-slate-400 text-[11px]">System Settings → General → About: Either NO section appears (all factory parts) or every part says 'Genuine Apple Part'. Walk away if 'Unknown Part' appears.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">8. Apple Diagnostics (Offline Self-Test)</strong>
+                    <span class="text-slate-400 text-[11px]">Shut down Mac, hold Power button, press Cmd+D. Result must be ADP000 (No issues found). Any other code flags hardware failure.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">9. Factory Erase & MDM Remote Management Gate</strong>
+                    <span class="text-slate-400 text-[11px]">System Settings → Erase All Content and Settings: Boot through Setup Assistant on Wi-Fi. Verify NO Remote Management profile appears.</span>
+                  </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl glass-card cursor-pointer hover:border-emerald-500/30 transition-all">
+                  <input type="checkbox" class="sim-playbook-check mt-0.5 rounded text-emerald-500 focus:ring-0">
+                  <div>
+                    <strong class="text-white block">10. Paperwork, Serialized Invoice & Chassis Laser Match</strong>
+                    <span class="text-slate-400 text-[11px]">Invoice serial number matches laser engraving on bottom chassis exactly. Written return policy documented.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- VIEW 10: Inspection Certificate & Raw Terminal Logs -->
+            <div id="sim-tab-certificate" class="sim-view-pane hidden space-y-4">
+              <!-- Segmented Sub-Tab Header -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2 bg-dark-950 p-1 rounded-xl border border-white/10">
+                  <button id="sim-subtab-cert-btn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>📄</span>
+                    <span>Inspection Certificate</span>
+                  </button>
+                  <button id="sim-subtab-logs-btn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>💻</span>
+                    <span>Raw Terminal Diagnostics</span>
+                    <span class="text-[9px] bg-sky-500/20 text-sky-300 px-1 rounded font-mono">8 CMDS</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button onclick="copyToClipboard('# MacCheck Pro Inspection Certificate\n**Score:** 100/100\n**Verdict:** 100% GENUINE APPLE SILICON\n- Memory: 8.0GB sysctl verified\n- Battery: Desay OEM (98%)\n- SSV Seal: Cryptographically Sealed', 'Certificate copied to clipboard!')" class="btn-secondary text-xs py-1.5 px-3">
+                    Copy Markdown
+                  </button>
+                  <button onclick="showToast('📄 Sample HTML Certificate downloaded!')" class="btn-primary text-xs py-1.5 px-3">
+                    Export HTML
+                  </button>
+                </div>
+              </div>
+
+              <!-- PANE A: Formatted Certificate View -->
+              <div id="sim-cert-view" class="space-y-3">
+                <div class="bg-dark-950 p-4 sm:p-5 rounded-2xl border border-white/10 font-mono text-xs text-slate-300 space-y-3 leading-relaxed">
+                  <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div class="text-emerald-400 font-bold text-sm"># 🛡️ MacCheck Pro — Cryptographic Inspection Certificate</div>
+                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-bold">100% PASS</span>
+                  </div>
+                  <div class="text-slate-400">**Audit Date:** 24 Nov 2026 • Darwin Kernel Verification</div>
+                  <div class="text-white font-bold text-sm">**Overall Hardware Score:** 100 / 100 (Flawless Hardware Integrity)</div>
+                  <div class="text-emerald-400 font-bold">**Official Verdict:** 100% GENUINE APPLE SILICON (Authentic Logic Board & Peripherals)</div>
+                  
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-2 border-t border-white/5">
+                    <div>• <strong>Processor:</strong> Apple M2 (4P + 4E Cores)</div>
+                    <div>• <strong>RAM Audit:</strong> 8.0 GB LPDDR5 (Anti-Spoof Verified)</div>
+                    <div>• <strong>Battery Cell:</strong> Desay OEM Pack (48 Cycles • 98.0% Health)</div>
+                    <div>• <strong>Storage Wear:</strong> NVMe NAND SSD 1% Wear (100% Spares)</div>
+                    <div>• <strong>Security Seals:</strong> Signed System Volume (SSV) Validated</div>
+                    <div>• <strong>Corporate DEP:</strong> 0 Remote Management Profiles</div>
+                  </div>
+
+                  <div class="border-t border-white/5 pt-2 text-slate-400 text-[10px]">
+                    &gt; Cryptographically verified by MacCheck Pro Kernel Suite. All registers verified authentic with zero modified plists or spoofed specs.
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE B: Raw Terminal Diagnostics View -->
+              <div id="sim-logs-view" class="hidden space-y-3">
+                <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+                  <span class="text-white font-semibold">Live Darwin Kernel Execution Traces (8 Commands Recorded)</span>
+                  <button id="sim-copy-script-btn" class="text-xs text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                    <span>📋 Copy Complete Diagnostic Shell Script</span>
+                  </button>
+                </div>
+
+                <div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+                  <!-- Command 1 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[1] Processor Brand & Microarchitecture</span>
+                      <button onclick="copyToClipboard('sysctl -n machdep.cpu.brand_string', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ sysctl -n machdep.cpu.brand_string</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">Apple M2</div>
+                  </div>
+
+                  <!-- Command 2 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[2] True Physical Memory Allocations (Anti-Spoof)</span>
+                      <button onclick="copyToClipboard('sysctl -n hw.memsize', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ sysctl -n hw.memsize</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">8589934592 (8.00 GB LPDDR5 Unified Memory)</div>
+                  </div>
+
+                  <!-- Command 3 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[3] Apple Smart Battery Microcontroller Dump</span>
+                      <button onclick="copyToClipboard('ioreg -r -c AppleSmartBattery', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ ioreg -r -c AppleSmartBattery | grep -E "DesignCapacity|CycleCount|MaxCapacity"</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">"CycleCount" = 48, "DesignCapacity" = 5103, "MaxCapacity" = 5001, "Manufacturer" = "Desay"</div>
+                  </div>
+
+                  <!-- Command 4 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[4] NVMe Controller & SMART NAND Wear</span>
+                      <button onclick="copyToClipboard('smartctl -a /dev/disk0', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ smartctl -a /dev/disk0</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">Percentage Used: 1%, Available Spare: 100%, Temperature: 31 Celsius, Data Units Written: 4.8 TB</div>
+                  </div>
+
+                  <!-- Command 5 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[5] Corporate MDM & Cloud Enrollment Gate</span>
+                      <button onclick="copyToClipboard('profiles status -type enrollment', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ profiles status -type enrollment</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">Enrolled via DEP: No | MDM server: None | Activation Lock: Disabled</div>
+                  </div>
+
+                  <!-- Command 6 -->
+                  <div class="bg-dark-950 p-3 rounded-xl border border-white/10 space-y-1.5 font-mono text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="text-white font-bold">[6] Signed System Volume (SSV) Cryptographic Seal</span>
+                      <button onclick="copyToClipboard('diskutil apfs listCryptoUsers /', 'Command copied!')" class="text-[10px] bg-white/10 hover:bg-white/20 text-slate-300 px-2 py-0.5 rounded">Copy</button>
+                    </div>
+                    <div class="text-sky-400">$ diskutil apfs listCryptoUsers /</div>
+                    <div class="text-emerald-400 bg-black/40 p-1.5 rounded">Cryptographic SSV Root Volume Sealed: VALID (Hardware Authenticated)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Simulator Bottom CTA Bar -->
+        <div class="bg-dark-800/90 border-t border-white/10 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <span class="text-amber-400">🔥</span>
+            <span>Liked the in-browser simulator? Own the full native macOS app for lifetime protection.</span>
+          </div>
+          <button data-buy-plan="personal" class="btn-primary text-xs py-2 px-5 whitespace-nowrap shadow-lg shadow-brand-500/25">
+            <span>Get Early Bird Access — <span class="line-through opacity-70 text-[10px] price-personal-original">₹149</span> <span class="price-personal font-black">₹59</span></span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Side-by-Side Comparison Matrix -->
+  <section class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">The Advantage</span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-4 mb-4">Why MacCheck Pro Beats Everything Else</h2>
+        <p class="text-slate-400 text-base">See how MacCheck Pro compares to native macOS diagnostics and generic benchmark apps.</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300 border-collapse glass-card rounded-2xl overflow-hidden">
+          <thead class="bg-dark-800/80 text-xs uppercase text-slate-400 font-semibold border-b border-white/10">
+            <tr>
+              <th class="p-4 sm:p-5">Verification Capability</th>
+              <th class="p-4 sm:p-5">About This Mac</th>
+              <th class="p-4 sm:p-5">Generic Utilities</th>
+              <th class="p-4 sm:p-5 text-emerald-400 bg-emerald-500/10">MacCheck Pro</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">Anti-RAM Spoofing (Kernel <code>sysctl</code> check)</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Reads plist</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ No</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (Kernel Byte Level)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">MDM / Apple DEP Cloud Lockdown Check</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Hidden</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ No</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (Catches Stolen/Leased)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">Battery OEM Supplier Decode (ATL/Desay/Simplo)</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Cycle only</td>
+              <td class="p-4 sm:p-5 text-amber-400">⚠️ Basic mAh</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (Hex Microcontroller)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">360° Dolby Atmos Spatial Sound Orbit Test</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ None</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Beep only</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (AVAudioNode Orbit)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">Liquid Retina XDR Mini-LED Dimming Checker</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ None</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Web page</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (Native Edge-to-Edge)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">Export Cryptographic HTML/Markdown Certificate</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ None</td>
+              <td class="p-4 sm:p-5 text-rose-400">❌ Text log</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ Yes (Verified for Resale)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-medium text-white">Requires Root / Sudo Administration Access</td>
+              <td class="p-4 sm:p-5 text-slate-400">N/A</td>
+              <td class="p-4 sm:p-5 text-amber-400">⚠️ Often Yes</td>
+              <td class="p-4 sm:p-5 text-emerald-400 font-bold bg-emerald-500/10">✅ 100% Sudo-Free & Safe</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Installation in 3 Steps with DMG Preview -->
+  <section class="py-20 bg-dark-850 border-y border-white/5 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Zero Setup Hassle</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-4">Up and Running in 30 Seconds</h2>
+        <p class="text-slate-400 text-base">No complex terminal commands or Xcode required. Ships as a drag-and-drop macOS disk image installer.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Steps List -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">1</div>
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">Download the Installer DMG</h4>
+              <p class="text-xs text-slate-400">Receive instant access to <code>MacCheck-Installer.dmg</code> right after checkout.</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-4 border-l-4 border-l-emerald-500">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">2</div>
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">Drag to Applications</h4>
+              <p class="text-xs text-slate-400">Double-click the volume and simply drag MacCheck Pro into your Applications folder.</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">3</div>
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">Launch & Run 120s Audit</h4>
+              <p class="text-xs text-slate-400">Launch from Spotlight, click Re-Scan, and print or export your cryptographic inspection report.</p>
+            </div>
+          </div>
+
+          <!-- Gatekeeper Bypass Callout -->
+          <div class="p-5 rounded-2xl bg-dark-900/90 border border-emerald-500/30 text-left space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Open Without macOS Gatekeeper Warning
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">One-Time Command</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              If macOS displays an <em>"unidentified developer"</em> or quarantine prompt on first launch, open Terminal and paste this command to clear the Gatekeeper flag instantly:
+            </p>
+            <div class="flex items-center gap-2 bg-dark-800 p-2.5 rounded-xl border border-white/10 font-mono text-xs text-emerald-300">
+              <span class="text-slate-500 select-none">$</span>
+              <code class="flex-1 select-all overflow-x-auto">xattr -cr "/Applications/MacCheck Pro.app"</code>
+              <button onclick="copyToClipboard('xattr -cr \'/Applications/MacCheck Pro.app\'', 'Command copied! Paste into Terminal.')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-[11px] font-sans font-medium text-white rounded-lg transition-colors shrink-0">
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DMG Screenshot -->
+        <div class="lg:col-span-7">
+          <div class="macos-window">
+            <div class="macos-window-header">
+              <div class="macos-traffic-lights">
+                <span class="macos-dot red"></span>
+                <span class="macos-dot yellow"></span>
+                <span class="macos-dot green"></span>
+              </div>
+              <div class="macos-window-title text-[11px]">MacCheck-Installer.dmg</div>
+            </div>
+            <img src="assets/images/installer-dmg.jpg" alt="MacCheck Pro Drag and Drop DMG Installer" class="w-full h-auto object-cover" data-zoomable>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Simple, Transparent Pricing</span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-4 mb-4">One-Time Payment. Lifetime Protection.</h2>
+        <p class="text-slate-400 text-base">No monthly subscriptions. Pay once via UPI, Cards, NetBanking or International payment methods.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        
+        <!-- Tier 1: Personal Lifetime -->
+        <div class="glass-card rounded-3xl p-8 border-2 border-emerald-500/50 flex flex-col justify-between relative hover:border-emerald-400 shadow-xl shadow-brand-500/10">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-emerald-400 text-dark-900 text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+            <span>🔥 EARLY BIRD 60% OFF</span>
+          </div>
+
+          <div>
+            <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">Individual Mac Buyer</div>
+            <h3 class="text-2xl font-bold text-white mb-2">Personal Lifetime</h3>
+            <p class="text-xs text-slate-400 mb-6">Perfect for checking a refurbished or pre-owned Mac before handing over your cash.</p>
+            
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="line-through text-slate-500 text-2xl font-bold price-personal-original">₹149</span>
+              <span class="text-5xl font-extrabold text-white price-personal">₹59</span>
+              <span class="text-xs text-slate-400">one-time / lifetime</span>
+            </div>
+
+            <ul class="space-y-3 text-sm text-slate-300 mb-8">
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> 100-Point Apple Silicon Hardware Audit</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Anti-RAM Spoofing & Serial Alignment</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Corporate MDM / DEP Cloud Lock Detection</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Battery OEM Supplier (ATL/Desay) & Wear</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> 360° Spatial Audio & 80Hz Woofer Tester</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Liquid Retina XDR & Keyboard Matrix</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Export Markdown & HTML Inspection Certificate</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Free Lifetime App Updates</li>
+            </ul>
+          </div>
+
+          <button data-buy-plan="personal" class="btn-primary w-full py-3.5 text-sm font-semibold">
+            <span>Claim Early Bird License — <span class="line-through opacity-70 text-xs price-personal-original">₹149</span> <span class="price-personal font-extrabold">₹59</span></span>
+          </button>
+        </div>
+
+        <!-- Tier 2: Pro Inspector (Featured) -->
+        <div class="glass-card rounded-3xl p-8 border border-white/10 flex flex-col justify-between relative hover:border-emerald-500/30">
+          <div>
+            <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">Technicians & Resellers</div>
+            <h3 class="text-2xl font-bold text-white mb-2">Pro Inspector Suite</h3>
+            <p class="text-xs text-slate-400 mb-6">For Mac refurbishers, repair technicians, and commercial IT buyers managing multiple devices.</p>
+            
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="line-through text-slate-500 text-2xl font-bold price-pro-original">₹499</span>
+              <span class="text-5xl font-extrabold text-white price-pro">₹149</span>
+              <span class="text-xs text-slate-400">one-time / lifetime</span>
+            </div>
+
+            <ul class="space-y-3 text-sm text-slate-300 mb-8">
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> <strong>Unlimited Mac Inspections</strong></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> All Personal Plan Verification Features</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> <strong>Branded HTML Certificates</strong> with your Shop Logo</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Standalone Terminal CLI Script (Inspect in Apple Store)</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Deep NAND TBW & NVMe SMART Wear Telemetry</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Priority 24/7 Technical Support</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Commercial Resale Verification License</li>
+            </ul>
+          </div>
+
+          <button data-buy-plan="pro" class="btn-primary w-full py-3.5 text-sm font-semibold bg-gradient-to-r from-emerald-400 to-brand-500 shadow-lg shadow-brand-500/30">
+            <span>Get Pro Inspector — <span class="line-through opacity-70 text-xs price-pro-original">₹499</span> <span class="price-pro font-extrabold">₹149</span></span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Payment Trust Badges -->
+      <div class="mt-12 text-center">
+        <div class="inline-flex flex-wrap items-center justify-center gap-6 px-6 py-3 rounded-2xl bg-dark-800/60 border border-white/5 text-xs text-slate-400">
+          <span class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> 256-Bit SSL Encrypted Razorpay Checkout</span>
+          <span>⚡ Supports UPI, GPay, PhonePe, Cards & NetBanking</span>
+          <span>🌍 International Cards & Currency Auto-Converted</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- About Us: Valance Engineering Syndicate Section -->
+  <section id="about" class="py-24 bg-gradient-to-b from-dark-900 via-dark-850 to-dark-900 border-t border-white/5 relative overflow-hidden">
+    <!-- Ambient Lighting Blobs -->
+    <div class="absolute top-1/3 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none -translate-y-1/2"></div>
+    <div class="absolute bottom-10 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 uppercase tracking-widest mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>About Us</span>
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+          Crafted by <span class="text-gradient-silver">Valance</span>. Built for Truth.
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          An international collective of professional software engineers, systems developers, and hardware specialists founded in 2025. We design lean, surgical utility software that solves critical problems with zero bloat.
+        </p>
+      </div>
+
+      <!-- Main Showcase Grid: Brand Emblem & Manifesto -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16">
+        
+        <!-- Left: Official 3D Valance Emblem Card -->
+        <div class="lg:col-span-5 flex flex-col items-center reveal-left">
+          <div class="relative w-full max-w-md group">
+            <!-- Dynamic Glow Rim -->
+            <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-slate-400/20 to-sky-500/20 blur-xl opacity-70 group-hover:opacity-100 transition duration-500"></div>
+            
+            <!-- Logo Container -->
+            <div class="relative rounded-3xl bg-dark-900 border border-white/10 p-8 sm:p-10 text-center shadow-2xl flex flex-col items-center">
+              <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden flex items-center justify-center p-2 mb-6 bg-black border border-white/10 shadow-2xl">
+                <img src="assets/images/valance-logo.png" alt="Valance Official Emblem" class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(255,255,255,0.18)] group-hover:scale-105 transition-transform duration-500">
+              </div>
+
+              <div class="space-y-1">
+                <span class="text-[11px] font-mono tracking-widest text-emerald-400 uppercase font-semibold">Established 2025 • Global Guild</span>
+                <h3 class="text-2xl font-extrabold text-white tracking-wider">VALANCE</h3>
+                <p class="text-xs text-slate-400">Software • Systems Architecture • Hardware Verification</p>
+              </div>
+
+              <!-- Key Credentials Badges -->
+              <div class="mt-6 pt-6 border-t border-white/10 w-full grid grid-cols-3 gap-2 text-center">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                  <div class="text-base font-bold text-white">2025</div>
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wider">Founded</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                  <div class="text-base font-bold text-emerald-400">Global</div>
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wider">Syndicate</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                  <div class="text-base font-bold text-sky-400">0%</div>
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wider">Bloatware</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: The Valance Manifesto & Story -->
+        <div class="lg:col-span-7 space-y-6 reveal-right">
+          <div class="glass-card rounded-3xl p-8 sm:p-10 border border-white/10 space-y-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">Who We Are: The Valance Development Team</h3>
+                <p class="text-xs text-slate-400">Independent Developers Operating Across Borders</p>
+              </div>
+            </div>
+
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              We are <strong>Valance</strong> (also operating under the <em>Valence Engineering Collective</em>) — an agile, international team of seasoned software engineers and systems programmers. Founded in <strong>2025</strong>, our syndicate unites developers across North America, Asia, and Europe who share one fundamental conviction: <em>software should be fast, honest, and respectful of the user’s hardware and privacy</em>.
+            </p>
+
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              In an era dominated by heavy Electron bloat, predatory recurring subscriptions, and intrusive background telemetry, we choose a different standard. We build <strong>compact, hyper-efficient native software</strong> that operates entirely in user-space, requires zero administrator/root compromises, and empowers users with raw, unvarnished hardware truth.
+            </p>
+
+            <!-- 3 Architectural Principles -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+              <div class="p-3.5 rounded-2xl bg-dark-800/80 border border-white/5">
+                <div class="text-emerald-400 text-xs font-bold mb-1 flex items-center gap-1.5">
+                  <span>⚡</span> 100% Client-Side
+                </div>
+                <div class="text-[12px] text-slate-400 leading-snug">All checks run locally in memory. Zero external network telemetry and zero analytics tracking.</div>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-dark-800/80 border border-white/5">
+                <div class="text-sky-400 text-xs font-bold mb-1 flex items-center gap-1.5">
+                  <span>🌐</span> Global Support
+                </div>
+                <div class="text-[12px] text-slate-400 leading-snug">Engineers available across international time zones to support developers and hardware buyers.</div>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-dark-800/80 border border-white/5">
+                <div class="text-amber-400 text-xs font-bold mb-1 flex items-center gap-1.5">
+                  <span>💎</span> Accessible Utility
+                </div>
+                <div class="text-[12px] text-slate-400 leading-snug">No SaaS lock-in or subscription fatigue. High-value tools priced fairly with lifetime ownership.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Multi-Platform Project Portfolio (IoT, Windows, Android, macOS) -->
+      <div class="mb-16">
+        <div class="text-center mb-10 reveal">
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Our Active Project Portfolio & Ecosystems</h3>
+          <p class="text-slate-400 text-xs sm:text-sm mt-1">From low-level microcontrollers to desktop operating systems and mobile devices.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Pillar 1: macOS Hardware Systems (MacCheck Pro) -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between reveal delay-100">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4">
+                🍏
+              </div>
+              <h4 class="text-lg font-bold text-white mb-2">macOS Architecture</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Flagship verification tools like <strong>MacCheck Pro</strong>. We reverse-engineer Apple Silicon device trees, detect spoofed RAM registers, audit Mini-LED local dimming, and inspect MDM enrollment.
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-emerald-400 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span>Status: Active v2.4</span>
+              <span>macOS 12–15</span>
+            </div>
+          </div>
+
+          <!-- Pillar 2: IoT & Embedded Systems -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-sky-500/40 transition-all flex flex-col justify-between reveal delay-200">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center text-xl mb-4">
+                📡
+              </div>
+              <h4 class="text-lg font-bold text-white mb-2">IoT & Embedded Systems</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Custom firmware and diagnostics for ESP32, ARM Cortex-M, and Nordic microcontrollers. Low-latency sensor telemetry, industrial RS-485/CAN bus decoders, and smart home peripheral bridges.
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-sky-400 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span>Firmware & Sensors</span>
+              <span>C / Rust / RTOS</span>
+            </div>
+          </div>
+
+          <!-- Pillar 3: Windows Utilities -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-amber-500/40 transition-all flex flex-col justify-between reveal delay-300">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-4">
+                🪟
+              </div>
+              <h4 class="text-lg font-bold text-white mb-2">Windows Utility Suites</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                High-performance Win32/C++ diagnostic tools, lightweight registry cleaners, thermal stress monitors, and DPC latency analyzers engineered with zero runtime dependencies.
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-amber-400 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span>Win32 & DirectX</span>
+              <span>Win 10 / 11</span>
+            </div>
+          </div>
+
+          <!-- Pillar 4: Android & Mobile Tools -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-purple-500/40 transition-all flex flex-col justify-between reveal delay-400">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4">
+                🤖
+              </div>
+              <h4 class="text-lg font-bold text-white mb-2">Android Performance</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Native Kotlin and NDK system apps, real-time battery milliampere degradation telemetry, OLED burn-in cyclers, and developer bridge diagnostic dashboards.
+              </p>
+            </div>
+            <div class="text-[11px] font-mono text-purple-400 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span>Kotlin & NDK</span>
+              <span>Android 12–15</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Professional Contact & Inquiries Banner -->
+      <div class="glass-card rounded-3xl p-8 sm:p-10 border border-emerald-500/20 bg-gradient-to-r from-dark-850 via-dark-800 to-dark-850 shadow-2xl reveal-scale">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+          
+          <div class="flex items-center gap-5 text-left">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+                <span>Official Direct Contact Channel</span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-white">Have a Query or Custom Software Requirement?</h3>
+              <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
+                Whether you need technical support for MacCheck Pro, want to propose a collaboration, or need a custom IoT / Windows / Android software utility, our international engineering team is ready to assist.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full lg:w-auto">
+            <a href="mailto:valanceorigin@gmail.com?subject=Inquiry%20to%20Valance%20Developers" class="btn-primary py-3.5 px-6 text-sm font-bold w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              <span>Email: valanceorigin@gmail.com</span>
+            </a>
+            <button onclick="copyToClipboard('valanceorigin@gmail.com', 'Valance email copied to clipboard!')" class="w-full sm:w-auto py-3.5 px-4 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span>Copy Address</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ Section (Accordion) -->
+  <section id="faq" class="py-20 bg-dark-850 border-t border-white/5 relative">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center mb-16">
+        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Got Questions?</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-3">Frequently Asked Questions</h2>
+        <p class="text-slate-400 text-sm">Everything you need to know about purchasing and using MacCheck Pro.</p>
+      </div>
+
+      <div class="space-y-4">
+        
+        <!-- Q1 -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>Does MacCheck Pro require administrator (sudo / root) privileges?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4 space-y-3">
+            <p>
+              <strong>For standard inspection:</strong> No. All visual and sensory diagnostic modules (Liquid Retina XDR screen dimming, audio woofer/tweeter sweeps, FaceTime camera & studio mic array, and the interactive keyboard matrix) run entirely in user-space without administrative permissions.
+            </p>
+            <p>
+              <strong>For the Deep Hardware Verification Scan:</strong> Yes, administrator (<code>sudo</code>) authorization is required. This is an intentional security design of macOS: low-level hardware inspection—such as reading authentic battery gas-gauge EEPROM registers, NVMe NAND TBW wear, Signed System Volume (SSV) cryptographic seals, and detecting spoofed RAM plists—requires direct kernel queries to prevent fraudulent sellers from masking defective or fake parts behind user-space plists.
+            </p>
+            <div class="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/20 text-xs text-slate-300 space-y-1.5">
+              <div class="text-emerald-400 font-bold flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <span>Our Utmost Commitment to Your Privacy & Safety:</span>
+              </div>
+              <ul class="list-disc list-inside space-y-1 text-slate-400">
+                <li><strong class="text-white">Strictly Read-Only:</strong> Sudo is utilized solely to query read-only sysctl and I/O Kit kernel tables. It never modifies, writes, or alters any file or system setting on the Mac.</li>
+                <li><strong class="text-white">Zero Personal Data Access:</strong> MacCheck Pro never touches or accesses your documents, photos, browser histories, passwords, or keychain data.</li>
+                <li><strong class="text-white">100% Offline & Private:</strong> The app executes entirely client-side on your local machine with zero analytics, zero external network calls, and zero telemetry collection.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>Which Mac models and macOS versions are supported?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+            MacCheck Pro is a Universal binary compatible with all Apple Silicon Macs (M1, M2, M3, M4 Base, Pro, Max, and Ultra) as well as modern Intel Macs. It is fully certified on macOS 15 Sequoia, macOS 14 Sonoma, macOS 13 Ventura, and macOS 12 Monterey.
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>What happens immediately after I complete payment?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+            Payment processing is instant via Razorpay. As soon as the transaction succeeds, you are immediately redirected to your personal Download & Activation page where you can download the <code>MacCheck-Installer.dmg</code> file and copy your unique license key. A copy is also dispatched immediately to your email address.
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>Can I pay using UPI, Google Pay, Credit/Debit cards, or from outside India?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+            Yes! Our Razorpay checkout supports all UPI apps (Google Pay, PhonePe, Paytm, BHIM), Indian NetBanking, and all major Credit and Debit Cards (Visa, Mastercard, RuPay, Amex). International buyers can pay using international credit/debit cards seamlessly with automatic currency conversion.
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>What if MacCheck Pro fails to detect a known hardware issue?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+            We provide a 100% 30-Day Money-Back Guarantee. If MacCheck Pro does not perform as advertised on your Mac, simply contact our support email with your receipt and we will issue a full refund without questions.
+          </div>
+        </div>
+
+        <!-- Q6: Gatekeeper Warning -->
+        <div class="faq-item glass-card rounded-2xl p-6 border border-white/5">
+          <button class="faq-trigger w-full flex items-center justify-between text-left text-base font-bold text-white">
+            <span>What if macOS shows "cannot be checked for malicious software" or a Gatekeeper warning?</span>
+            <svg class="faq-icon w-5 h-5 text-emerald-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div class="faq-content hidden mt-4 text-sm text-slate-300 leading-relaxed border-t border-white/5 pt-4 space-y-2">
+            <p>Because MacCheck Pro is an independent developer tool distributed directly via DMG rather than through the Mac App Store, macOS attaches a security quarantine flag upon download. You can clear this warning permanently in 2 seconds:</p>
+            <p>Open <strong>Terminal</strong> and run:</p>
+            <div class="bg-dark-800 p-2.5 rounded-xl border border-white/10 font-mono text-xs text-emerald-300 flex items-center justify-between">
+              <code>xattr -cr "/Applications/MacCheck Pro.app"</code>
+              <button onclick="copyToClipboard('xattr -cr \'/Applications/MacCheck Pro.app\'', 'Command copied!')" class="text-xs px-2 py-1 bg-white/10 rounded hover:bg-white/20 text-white">Copy</button>
+            </div>
+            <p class="text-xs text-slate-400">Alternatively, you can right-click the app in Applications and click <strong>Open</strong>, then click <strong>Open</strong> in the confirmation prompt.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Final Call to Action -->
+  <section class="py-20 relative overflow-hidden text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass-card rounded-3xl p-10 sm:p-16 border border-emerald-500/30 relative overflow-hidden reveal-scale">
+        <div class="absolute inset-0 bg-gradient-to-tr from-brand-500/10 via-transparent to-sky-500/10 pointer-events-none"></div>
+        
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-6">
+          Inspect Before You Pay. <br>Save Thousands on Your Next Mac.
+        </h2>
+        <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-8">
+          Download MacCheck Pro now. Keep it on a USB flash drive or your Mac, and test every prospective purchase with confidence.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button data-buy-plan="personal" class="btn-primary py-4 px-8 text-base">
+            <span>Get Instant Access — <span class="price-personal">₹59</span></span>
+          </button>
+          <a href="#simulator" class="btn-secondary py-4 px-8 text-base">
+            <span>Try Live Simulator</span>
+          </a>
+        </div>
+
+        <!-- Early Bird India Sale Highlight Box (Displayed ONLY when India is selected) -->
+        <div id="india-sale-box" class="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-dark-850 to-emerald-950/40 border border-emerald-500/30 text-center max-w-2xl mx-auto shadow-2xl transition-all duration-300">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider mb-3">
+            <span>🇮🇳</span>
+            <span>Early Bird India Sale</span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Special India Launch Price: Just ₹59</h3>
+          <p class="text-xs sm:text-sm text-slate-300 mb-5 max-w-lg mx-auto leading-relaxed">
+            Get lifetime access to the complete MacCheck Pro hardware verification suite for just <strong class="text-emerald-400 font-bold">₹59</strong> (regular ₹149). Instant DMG download & lifetime updates.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <button data-buy-plan="personal" class="btn-primary text-xs sm:text-sm py-2.5 px-6 font-bold shadow-md">
+              Claim ₹59 India Deal →
+            </button>
+            <a href="mailto:valanceorigin@gmail.com" class="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-white bg-dark-900/90 hover:bg-dark-800 px-4 py-2.5 rounded-full border border-white/10 transition-colors">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span>Contact Us: <strong class="text-white">valanceorigin@gmail.com</strong></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-white/10 py-12 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-3">
+        <img src="assets/images/logo.png" alt="MacCheck Pro" class="w-7 h-7 rounded-lg">
+        <span class="font-bold text-white text-sm">MacCheck Pro</span>
+        <span class="text-slate-600">|</span>
+        <span>Hardware Verification & Refurbished Quality Benchmark</span>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center md:justify-end gap-6 text-slate-400">
+        <a href="#features" class="hover:text-emerald-400 transition-colors">Features</a>
+        <a href="#pricing" class="hover:text-emerald-400 transition-colors">Pricing</a>
+        <a href="#about" class="hover:text-emerald-400 transition-colors text-white font-medium">About Us</a>
+        <a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+        <a href="mailto:valanceorigin@gmail.com" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-slate-300">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span>Contact: <strong class="text-white">valanceorigin@gmail.com</strong></span>
+        </a>
+      </div>
+
+      <div class="text-slate-400 text-center md:text-right">
+        <div>© 2026 MacCheck Pro by <strong class="text-white">Valance</strong>. All rights reserved.</div>
+        <div class="text-[11px] text-slate-500 mt-1">Established 2025 • International Systems Engineering Collective</div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Razorpay Checkout Modal -->
+  <div id="checkout-modal" class="modal-overlay">
+    <div class="modal-box">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-white/10 flex items-center justify-between bg-dark-800/80">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <h3 id="modal-plan-title" class="text-lg font-bold text-white">MacCheck Pro — Personal Lifetime</h3>
+            <span id="modal-plan-price" class="text-emerald-400 font-extrabold text-sm"><span class="price-personal">₹59</span> (<span class="currency-label">INR</span>)</span>
+          </div>
+        </div>
+        <button id="modal-close-btn" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-4">
+        <p id="modal-plan-desc" class="text-xs text-slate-400 leading-relaxed">
+          Single Mac lifetime license, 100-point hardware verification, zero sudo needed & instant DMG installer.
+        </p>
+
+        <!-- Customer Input Fields -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Your Full Name</label>
+            <input type="text" id="buyer-name" placeholder="e.g. Alex Rivera" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Your Email Address (For License & Download Delivery) *</label>
+            <input type="email" id="buyer-email" placeholder="alex@example.com" required class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Mobile Number (Optional for SMS receipt)</label>
+            <input type="tel" id="buyer-phone" placeholder="9876543210" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+          </div>
+        </div>
+
+        <!-- Security Pill -->
+        <div class="flex items-center gap-2 p-3 rounded-xl bg-dark-900 border border-white/5 text-[11px] text-slate-400">
+          <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Secured via Razorpay 256-Bit SSL. Instant download and license code delivered upon approval.</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2 pt-2">
+          <!-- Primary Razorpay Button -->
+          <button id="modal-pay-razorpay-btn" class="btn-primary w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-dark-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-10h2v8h-2V6z"/></svg>
+            <span>Proceed to Razorpay Checkout</span>
+          </button>
+
+          <!-- Instant Test Demo Purchase Button (Zero API Setup Needed for demo) -->
+          <button id="modal-test-pay-btn" class="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-300 font-medium border border-white/10 transition-colors flex items-center justify-center gap-1.5">
+            <span>⚡ Test Demo Flow (Simulate Instant Success & License)</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fullscreen Image Lightbox Modal -->
+  <div id="image-lightbox" class="modal-overlay">
+    <div class="relative max-w-5xl w-full p-4">
+      <button id="lightbox-close" class="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-dark-800 text-white border border-white/20 flex items-center justify-center hover:bg-dark-700 transition-colors z-50">
+        ✕
+      </button>
+      <div class="macos-window">
+        <div class="macos-window-header">
+          <div class="macos-traffic-lights">
+            <span class="macos-dot red"></span>
+            <span class="macos-dot yellow"></span>
+            <span class="macos-dot green"></span>
+          </div>
+          <div id="lightbox-caption" class="macos-window-title text-xs font-semibold">MacCheck Pro Screenshot</div>
+        </div>
+        <img id="lightbox-img" src="" alt="Enlarged Screenshot" class="w-full h-auto max-h-[80vh] object-contain bg-dark-900">
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Edge-to-Edge Display Uniformity & Dead Pixel Canvas -->
+  <div id="screen-test-fullscreen" class="bg-black">
+    <div class="text-center p-6 bg-dark-900/90 rounded-2xl border border-white/20 text-white text-xs max-w-sm">
+      <p class="font-bold mb-1">Fullscreen Color Mode Active</p>
+      <p class="text-slate-400">Inspect for dead pixels or backlight bleeding. Press <kbd class="px-1.5 py-0.5 bg-dark-800 border border-white/20 rounded">ESC</kbd> or click anywhere to exit.</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/main.js?v=2.6"></script>
+</body>
+</html>

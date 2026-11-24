@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful — MacCheck Pro</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              400: '#34d399',
+              500: '#10b981',
+              glow: '#00f293'
+            },
+            dark: {
+              900: '#05070c',
+              850: '#090d16',
+              800: '#0d1322',
+              700: '#151c2e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-dark-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="border-b border-white/10 py-5 bg-dark-900/80 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/images/logo.png" alt="MacCheck Pro" class="w-9 h-9 rounded-xl">
+        <span class="font-bold text-white text-base">MacCheck Pro</span>
+      </a>
+      <a href="index.html" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+        <span>← Back to Website</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Success Container -->
+  <main class="max-w-3xl mx-auto px-4 py-12 flex-1 w-full">
+    
+    <!-- Success Banner -->
+    <div class="text-center mb-10">
+      <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-500/20">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Payment Confirmed!</h1>
+      <p class="text-slate-400 text-sm">Thank you for purchasing MacCheck Pro. Your license has been activated and is ready to use.</p>
+    </div>
+
+    <!-- License & Download Card -->
+    <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 mb-8 space-y-6">
+      
+      <!-- License Key Box -->
+      <div class="bg-dark-800/90 rounded-2xl p-5 border border-white/5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Your Personal License Key</span>
+          <span class="text-[10px] text-emerald-400 font-semibold uppercase bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Lifetime Active</span>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+          <div id="order-license-key" class="w-full bg-dark-900 border border-white/10 rounded-xl px-4 py-3 font-mono text-emerald-400 text-base sm:text-lg font-bold tracking-widest text-center select-all">
+            MCP-PRO-871B-9K2M-48A1
+          </div>
+          <button onclick="copyToClipboard(document.getElementById('order-license-key').textContent.trim(), 'License key copied!')" class="w-full sm:w-auto shrink-0 bg-white/10 hover:bg-white/15 text-white font-medium text-xs px-5 py-3.5 rounded-xl transition-colors border border-white/10 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            <span>Copy Key</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <div class="text-center pt-2">
+        <a id="dmg-download-btn" href="downloads/MacCheck-Installer.dmg" download="MacCheck-Installer.dmg" class="btn-primary w-full py-4 text-base font-bold shadow-xl shadow-brand-500/25 flex items-center justify-center gap-2">
+          <svg class="w-5 h-5 text-dark-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Download MacCheck-Installer.dmg (v2.4)</span>
+        </a>
+        <p class="text-[11px] text-slate-500 mt-2">Compatible with Apple Silicon M1/M2/M3/M4 & Intel • Universal macOS Binary (~1.2 MB)</p>
+      </div>
+
+      <!-- Order Receipt Details -->
+      <div class="border-t border-white/5 pt-5 text-xs text-slate-400 space-y-2">
+        <div class="flex justify-between">
+          <span>Payment ID:</span>
+          <span id="order-payment-id" class="font-mono text-white">pay_demo_success</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Plan:</span>
+          <span id="order-plan-name" class="font-semibold text-emerald-400">MacCheck Pro (Lifetime)</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Confirmation Sent To:</span>
+          <span id="order-email" class="text-white">Customer Email</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Warranty:</span>
+          <span class="text-white">30-Day Money Back Guarantee</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/10">
+      <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <span>🚀</span>
+        <span>Quick Installation & Verification (30 Seconds)</span>
+      </h3>
+      
+      <ol class="space-y-4 text-sm text-slate-300">
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+          <div>
+            <strong class="text-white">Open the DMG file:</strong> Double-click the downloaded <code>MacCheck-Installer.dmg</code> file.
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+          <div>
+            <strong class="text-white">Drag into Applications:</strong> Drag the <strong>MacCheck Pro</strong> app icon into the Applications folder shortcut.
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+          <div>
+            <strong class="text-white">Bypass macOS Gatekeeper Warning:</strong> If macOS shows an <em>"unidentified developer"</em> warning on first open, paste this command in <strong>Terminal</strong> to open without warning:
+            <div class="mt-2 flex items-center gap-2 bg-dark-800 p-2.5 rounded-xl border border-white/10 font-mono text-xs text-emerald-300">
+              <span class="text-slate-500 select-none">$</span>
+              <code class="flex-1 select-all overflow-x-auto">xattr -cr "/Applications/MacCheck Pro.app"</code>
+              <button onclick="copyToClipboard('xattr -cr \'/Applications/MacCheck Pro.app\'', 'Command copied! Paste into Terminal.')" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-xs font-sans font-medium text-white rounded-lg transition-colors shrink-0">
+                Copy Command
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Or run: <code class="text-slate-400">xattr -cr /Applications/MacCheck\ Pro.app</code></p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">4</span>
+          <div>
+            <strong class="text-white">Launch & Inspect:</strong> Open MacCheck Pro via Spotlight (<kbd class="px-1.5 py-0.5 bg-dark-800 rounded border border-white/10 text-xs">Cmd + Space</kbd>). Click <strong>Re-Scan Live Mac</strong> to audit all 20+ registers and export your certificate!
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-6 text-center text-xs text-slate-500">
+    © 2026 MacCheck Pro by <strong class="text-slate-300">Valance</strong>. Need assistance or have questions? Email us at <a href="mailto:valanceorigin@gmail.com" class="text-emerald-400 underline font-medium">valanceorigin@gmail.com</a>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
